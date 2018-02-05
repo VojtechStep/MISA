@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json.schemastore.org/tslint",
+  "defaultSeverity": "error",
+  "extends": ["tslint:latest"],
+  "jsRules": {},
+  "rules": {
+    "no-console": {
+      "severity": "warning"
+    },
+    "quotemark": {
+      "options": "single"
+    }
+  },
+  "rulesDirectory": []
+}
