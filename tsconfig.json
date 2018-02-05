@@ -1,0 +1,30 @@
+{
+  "include": [
+    "src/**/*.ts"
+  ],
+  "compilerOptions": {
+    "strict": true,
+    "module": "commonjs",
+    "declaration": true,
+    "noEmitOnError": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noResolve": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "lib": [
+      "esnext"
+    ],
+    "pretty": true,
+    "plugins": [
+      { "name": "tslint-language-service" }
+    ],
+    "outDir": "lib",
+    "rootDir": "src",
+    "stripInternal": true,
+    "target": "es2015"
+  }
+}

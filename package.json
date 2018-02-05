@@ -1,0 +1,32 @@
+{
+  "name": "misa",
+  "version": "0.0.0-alpha.1",
+  "description": "User management library. MISA IS not Auth0",
+  "main": "index.js",
+  "repository": "https://github.com/VojtechStep/MISA.git",
+  "author": "Vojtech Stepancik <vojtechstepancik@outlook.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "build:tests": "tsc --project tsconfig-tests.json",
+    "test": "yarn build && yarn build:tests && ava",
+    "coverage": "yarn build:tests && nyc ava",
+    "clean": "rimraf lib"
+  },
+  "devDependencies": {
+    "@types/node": "^9.4.0",
+    "ava": "^0.25.0",
+    "nyc": "^11.4.1",
+    "rimraf": "^2.6.2",
+    "tslint": "^5.9.1",
+    "tslint-language-service": "^0.9.8",
+    "typescript": "^2.7.1"
+  },
+  "ava": {
+    "files": [
+      "tests/*.js"
+    ],
+    "typescript": true
+  }
+}
