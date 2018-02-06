@@ -12,12 +12,16 @@
     "build:tests": "tsc --project tsconfig-tests.json",
     "test": "yarn build && yarn build:tests && ava",
     "coverage": "yarn build:tests && nyc ava",
-    "clean": "rimraf lib"
+    "lint": "tslint -p tsconfig.json",
+    "clean": "rimraf lib",
+    "rebuild": "yarn clean && yarn build"
   },
   "devDependencies": {
     "@types/node": "^9.4.0",
     "ava": "^0.25.0",
+    "mongodb-memory-server": "^1.6.5",
     "nyc": "^11.4.1",
+    "prettier": "^1.10.2",
     "rimraf": "^2.6.2",
     "tslint": "^5.9.1",
     "tslint-language-service": "^0.9.8",
@@ -25,8 +29,27 @@
   },
   "ava": {
     "files": [
-      "tests/*.js"
+      "tests/**/*.js"
     ],
     "typescript": true
+  },
+  "nyc": {
+    "include": [
+      "lib/**/*.js"
+    ],
+    "sourceMap": true,
+    "cache": true,
+    "all": true
+  },
+  "prettier": {
+    "printWidth": 120,
+    "tabWidth": 2,
+    "useTabs": false,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "bracketSpacing": true,
+    "arrowParens": "avoid",
+    "parser": "typescript"
   }
 }
