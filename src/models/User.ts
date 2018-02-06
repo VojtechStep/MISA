@@ -1,10 +1,3 @@
-export class User {
-  constructor(
-    public email: string,
-    public name: string,
-  ) {}
-
-  public getIdentifier(): string {
-    return `${this.name} <${this.email}>`;
-  }
+export class User<TMetadata> {
+  constructor(public email: string, public name: string, public metadata?: TMetadata) {}
 }
