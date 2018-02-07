@@ -1,6 +1,7 @@
 {
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "global.d.ts",
   ],
   "compilerOptions": {
     "strict": true,
@@ -15,6 +16,7 @@
     "noUnusedParameters": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
+    "inlineSourceMap": true,
     "lib": [
       "esnext"
     ],

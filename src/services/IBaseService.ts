@@ -1,16 +1,16 @@
 import { User } from '../models/User';
 
-export default interface IBaseService<TMetadata> {
+export interface IBaseService<TMetadata = {}> {
   // Mutation
-  addUser(user: User<TMetadata>): void;
-  verify(user: User<TMetadata>): void;
-  changePassword(user: User<TMetadata>): void;
-  delete(user: User<TMetadata>): void;
+  addUser(user: User<TMetadata>): MaybeAsync<void>;
+  verify(user: User<TMetadata>): MaybeAsync<void>;
+  changePassword(user: User<TMetadata>): MaybeAsync<void>;
+  delete(user: User<TMetadata>): MaybeAsync<void>;
   // Checks
-  exists(user: User<TMetadata>): boolean;
-  isVerified(user: User<TMetadata>): boolean;
+  exists(user: User<TMetadata>): MaybeAsync<boolean>;
+  isVerified(user: User<TMetadata>): MaybeAsync<boolean>;
 
   // Queries
-  getUser(userPattern: User<TMetadata>): User<TMetadata> | undefined;
-  getUsers(userPattern: User<TMetadata>): User<TMetadata>[];
-};
+  getUser(userPattern: User<TMetadata>): MaybeAsync<User<TMetadata> | undefined>;
+  getUsers(userPattern: User<TMetadata>): MaybeAsync<User<TMetadata>[]>;
+}
