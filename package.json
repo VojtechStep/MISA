@@ -12,14 +12,20 @@
     "build:tests": "tsc --project tsconfig-tests.json",
     "build:rules": "tsc ./devtools/tslint-rules/customSemiRule.ts --lib es6",
     "test": "yarn build && yarn build:tests && ava",
-    "coverage": "yarn build:tests && nyc ava",
+    "coverage": "yarn build && yarn build:tests && nyc ava",
     "lint": "tslint -p tsconfig.json",
     "clean": "rimraf lib",
     "rebuild": "yarn clean && yarn build"
   },
+  "dependencies": {
+    "node-common-errors": "^0.4.0"
+  },
   "devDependencies": {
-    "@types/node": "^9.4.0",
+    "@types/mongodb": "^3.0.5",
+    "@types/node": "^9.4.1",
+    "@types/node-common-errors": "^0.4.2",
     "ava": "^0.25.0",
+    "mongodb": "^3.0.2",
     "mongodb-memory-server": "^1.6.5",
     "nyc": "^11.4.1",
     "prettier": "^1.10.2",
@@ -29,11 +35,13 @@
     "tsutils": "^2.21.0",
     "typescript": "^2.7.1"
   },
+  "peerDependencies": {
+    "mongodb": "^3.0.2"
+  },
   "ava": {
     "files": [
       "tests/**/*.js"
-    ],
-    "typescript": true
+    ]
   },
   "nyc": {
     "include": [
