@@ -10,6 +10,7 @@
   "scripts": {
     "build": "tsc",
     "build:tests": "tsc --project tsconfig-tests.json",
+    "build:rules": "tsc ./devtools/tslint-rules/customSemiRule.ts --lib es6",
     "test": "yarn build && yarn build:tests && ava",
     "coverage": "yarn build:tests && nyc ava",
     "lint": "tslint -p tsconfig.json",
@@ -25,6 +26,7 @@
     "rimraf": "^2.6.2",
     "tslint": "^5.9.1",
     "tslint-language-service": "^0.9.8",
+    "tsutils": "^2.21.0",
     "typescript": "^2.7.1"
   },
   "ava": {

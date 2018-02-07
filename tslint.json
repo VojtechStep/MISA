@@ -1,6 +1,7 @@
 {
   "$schema": "http://json.schemastore.org/tslint",
   "defaultSeverity": "warning",
+  "rulesDirectory": "./devtools/tslint-rules",
   "rules": {
     // TypeScript specific
     "adjacent-overload-signatures": true,
@@ -206,7 +207,7 @@
       "avoid-template"
     ],
     "return-undefined": true,
-    "semicolon": [true,
+    "custom-semi": [true,
       "always"
     ],
     "space-before-function-paren": [true, {
