@@ -127,7 +127,7 @@
     },
     "max-classes-per-file": false,
     "max-file-line-count": false,
-    "no-default-export": false,
+    "no-default-export": true,
     "no-duplicate-imports": true,
     "no-mergeable-namespace": true,
     "no-require-imports": true,
@@ -135,7 +135,14 @@
     "prefer-const": true,
     "prefer-readonly": true,
     "trailing-comma": [true, {
-      "multiline": "always",
+      "multiline": {
+        "objects": "always",
+        "arrays": "always",
+        "imports": "always",
+        "exports": "always",
+        "typeLiterals": "always",
+        "functions": "never"
+      },
       "singleline": "never"
     }],
     // Style
@@ -207,7 +214,7 @@
       "avoid-template"
     ],
     "return-undefined": true,
-    "custom-semi": [true,
+    "semicolon": [true,
       "always"
     ],
     "space-before-function-paren": [true, {

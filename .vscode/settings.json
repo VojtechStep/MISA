@@ -7,9 +7,12 @@
     "**/.hg": true,
     "**/CVS": true,
     "**/.DS_Store": true,
-    ".nyc_output": true,
+    ".nyc_output": false,
+    ".vscode": true,
+    "devtools": true,
+    "lib": false,
     "tests/**/*.js": true,
-    "lib/**/*.d.ts": true,
+    "yarn.lock": true
   },
   "editor.formatOnSave": true
 }
