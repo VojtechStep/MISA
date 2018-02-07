@@ -1,5 +1,5 @@
 import genericTest, { RegisterContextual } from 'ava';
-import { User } from '../lib/index';
+import { User } from '../lib';
 
 const test: RegisterContextual<{
   userData: {
