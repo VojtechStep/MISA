@@ -18,12 +18,11 @@
     "rebuild": "yarn clean && yarn build"
   },
   "dependencies": {
-    "node-common-errors": "^0.4.0"
+    "common-errors": "^1.0.5"
   },
   "devDependencies": {
     "@types/mongodb": "^3.0.5",
     "@types/node": "^9.4.1",
-    "@types/node-common-errors": "^0.4.2",
     "ava": "^0.25.0",
     "mongodb": "^3.0.2",
     "mongodb-memory-server": "^1.6.5",
