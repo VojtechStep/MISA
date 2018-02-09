@@ -47,6 +47,10 @@
     "include": [
       "lib/**/*.js"
     ],
+    "reporter": [
+      "text",
+      "html"
+    ],
     "sourceMap": true,
     "cache": true,
     "all": true
