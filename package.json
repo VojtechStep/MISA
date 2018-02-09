@@ -9,10 +9,11 @@
   "private": true,
   "scripts": {
     "build": "tsc",
-    "build:tests": "tsc --project tsconfig-tests.json",
+    "build:tests": "rimraf tests/**/*.js && tsc --project tsconfig-tests.json",
     "build:rules": "tsc ./devtools/tslint-rules/customSemiRule.ts --lib es6",
     "test": "yarn build && yarn build:tests && ava",
-    "coverage": "yarn build && yarn build:tests && nyc ava",
+    "coverage:nobuild": "nyc ava && ./coverage/index.html",
+    "coverage": "yarn build && yarn build:tests && yarn coverage:nobuild",
     "lint": "tslint -p tsconfig.json",
     "clean": "rimraf lib",
     "rebuild": "yarn clean && yarn build"
@@ -30,6 +31,7 @@
     "prettier": "^1.10.2",
     "rimraf": "^2.6.2",
     "tslint": "^5.9.1",
+    "tslint-config-prettier": "^1.7.0",
     "tslint-language-service": "^0.9.8",
     "tsutils": "^2.21.0",
     "typescript": "^2.7.1"

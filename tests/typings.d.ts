@@ -1,1 +1,1 @@
-declare module 'mongodb-memory-server'
+declare module 'mongodb-memory-server';
