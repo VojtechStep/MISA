@@ -1,7 +1,7 @@
-import { IBaseService } from './IBaseService';
-import { User } from '../models/User';
-import { MongoClient, MongoClientOptions, Db, InsertOneWriteOpResult } from 'mongodb';
-import { InvalidOperationError, ArgumentError } from 'common-errors';
+import { User } from '../../models/User';
+import { MongoClient, MongoClientOptions, Db } from 'mongodb';
+import { ArgumentError } from 'common-errors';
+import { IService } from '..';
 
 export type MongoServiceConnectionOptions = {
   dbUri?: string;
@@ -15,7 +15,7 @@ export enum MongoServiceErrors {
   NOT_CONNNECTED,
 }
 
-export class MongoService<TMetadata> implements IBaseService<TMetadata> {
+export class MongoService<T extends User = User> implements IService<T> {
   private static readonly dbNameExtractionRegex = /[\d\w](?:\/(?:([\d\w]+)(?:\?[\d\w]+=[\d\w]+(?:&[\d\w]+=[\d\w]+)*)?)?)?$/;
   static readonly DEFAULT_COLLECTION_NAME = 'users';
   private readonly options: MongoServiceConnectionOptions = {};
@@ -25,10 +25,13 @@ export class MongoService<TMetadata> implements IBaseService<TMetadata> {
   constructor(options?: MongoServiceConnectionOptions) {
     this.options = options || {};
   }
+  getDb(): Db {
+    return this.db!;
+  }
   async connect(
     serviceOptions?: MongoServiceConnectionOptions,
     clientOptions?: MongoClientOptions
-  ): Promise<MongoService<TMetadata>> {
+  ): Promise<MongoService<T>> {
     if (serviceOptions) {
       let serviceOptionKey: keyof MongoServiceConnectionOptions;
       for (serviceOptionKey in serviceOptions) {
@@ -37,7 +40,7 @@ export class MongoService<TMetadata> implements IBaseService<TMetadata> {
       }
     }
     if (!this.options.dbUri) {
-      // tslint:disable-next-line
+      // tslint:disable-next-line no-unsafe-any
       throw new ArgumentError(MongoServiceErrors.NO_DB_URI.toString());
     }
     if (!this.options.dbName) {
@@ -45,7 +48,7 @@ export class MongoService<TMetadata> implements IBaseService<TMetadata> {
       if (extracted) this.options.dbName = extracted;
     }
     if (!this.options.dbName) {
-      // tslint:disable-next-line
+      // tslint:disable-next-line no-unsafe-any
       throw new ArgumentError(MongoServiceErrors.NO_DB_NAME.toString());
     }
     if (!this.options.collectionName) this.options.collectionName = MongoService.DEFAULT_COLLECTION_NAME;
@@ -69,37 +72,17 @@ export class MongoService<TMetadata> implements IBaseService<TMetadata> {
   getCollectionName(): string | undefined {
     return this.options.collectionName;
   }
-  async addUser(user: User<TMetadata>): Promise<void> {
+  async add(user: User): Promise<T> {
     console.log(user);
-    if (!this.isConnected()) {
-      throw new InvalidOperationError(MongoServiceErrors.NOT_CONNNECTED.toString());
-    }
-    try {
-      const result: InsertOneWriteOpResult = await this.db!.collection(this.options.collectionName!).insertOne(user);
-      console.log(result);
-    } catch (err) {
-      console.log(err);
-    }
-  }
-  verify(/* user: User<TMetadata> */): void {
     throw new Error('Method not implemented.');
   }
-  changePassword(/* user: User<TMetadata> */): void {
+  delete(/* user: User<TMetadata> */): MaybeAsync<T> {
     throw new Error('Method not implemented.');
   }
-  delete(/* user: User<TMetadata> */): void {
+  update(/* user: User<TMetadata> */): MaybeAsync<T> {
     throw new Error('Method not implemented.');
   }
-  exists(/* user: User<TMetadata> */): boolean {
-    throw new Error('Method not implemented.');
-  }
-  isVerified(/* user: User<TMetadata> */): boolean {
-    throw new Error('Method not implemented.');
-  }
-  async getUser(/* userPattern: User<TMetadata> */): Promise<User<TMetadata> | undefined> {
-    throw new Error('Method not implemented.');
-  }
-  getUsers(/* userPattern: User<TMetadata> */): User<TMetadata>[] {
+  get(/* userPattern: User<TMetadata> */): MaybeAsync<T | undefined> {
     throw new Error('Method not implemented.');
   }
 }

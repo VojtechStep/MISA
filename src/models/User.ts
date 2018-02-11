@@ -1,3 +1,3 @@
-export class User<TMetadata> {
-  constructor(public email: string, public name: string, public metadata?: TMetadata) {}
+export class User {
+  constructor(readonly email: string, readonly name: string) {}
 }
