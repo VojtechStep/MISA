@@ -6,11 +6,13 @@
   ],
   "compilerOptions": {
     "allowJs": false,
+    "module": "commonjs",
     "lib": [
       "esnext"
     ],
     "strict": true,
     "noEmitOnError": true,
-    "inlineSourceMap": true
+    "inlineSourceMap": true,
+    "target": "es2015"
   }
 }
