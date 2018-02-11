@@ -10,17 +10,17 @@
       "order": [
         "static-field",
         "instance-field",
-        "constructor",
         {
-          "name": "methods",
+          "name": "head",
           "kinds": [
             "static-method",
-            "instance-method"
+            "constructor"
           ]
-        }
+        },
+        "instance-method"
       ]
     }],
-    "no-any": true,
+    "no-any": false,
     "no-empty-interface": false,
     "no-import-side-effect": true,
     "no-inferrable-types": [true,
