@@ -125,7 +125,7 @@ test('Can override collection name', async t => {
 
 test('Connect parameters override constructor', async t => {
   t.plan(4);
-  let service = new MongoService({
+  const service = new MongoService({
     dbUri: connectionWithoutDB,
     collectionName: colName,
     dbName,
@@ -139,6 +139,14 @@ test('Connect parameters override constructor', async t => {
   t.true(service.isConnected());
   t.is(service.getDbName(), override);
   t.is(service.getCollectionName(), override);
+});
+
+test('Closing successfully', async t => {
+  const service = new MongoService();
+  await service.connect({ dbUri: connectionWithDB });
+  t.true(service.isConnected());
+  await t.notThrows(service.close());
+  t.false(service.isConnected());
 });
 
 test.afterEach.always('Tear down mongo', t => {
