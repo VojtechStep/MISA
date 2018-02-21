@@ -1,6 +1,14 @@
 import { User } from '../../models/User';
-import { MongoClient, MongoClientOptions, Db } from 'mongodb';
-import { ArgumentError } from 'common-errors';
+import {
+  MongoClient,
+  MongoClientOptions,
+  Db,
+  ObjectId,
+  InsertOneWriteOpResult,
+  Collection,
+  FindAndModifyWriteOpResultObject,
+} from 'mongodb';
+import { ArgumentError, InvalidOperationError, MongoError } from 'common-errors';
 import { IService } from '..';
 
 export type MongoServiceConnectionOptions = {
@@ -15,8 +23,10 @@ export enum MongoServiceErrors {
   NOT_CONNNECTED,
 }
 
+export type WithId<T = {}> = T & { _id: ObjectId };
+
 export class MongoService<T extends User = User> implements IService<T> {
-  private static readonly dbNameExtractionRegex = /[\d\w](?:\/(?:([\d\w]+)(?:\?[\d\w]+=[\d\w]+(?:&[\d\w]+=[\d\w]+)*)?)?)?$/;
+  private static readonly dbNameExtractionRegex = /[\d\w](?:\/(?:([\d-\w]+)(?:\?[\d\w]+=[\d\w]+(?:&[\d\w]+=[\d\w]+)*)?)?)?$/;
   static readonly DEFAULT_COLLECTION_NAME = 'users';
   private readonly options: MongoServiceConnectionOptions = {};
   private client?: MongoClient;
@@ -25,8 +35,23 @@ export class MongoService<T extends User = User> implements IService<T> {
   constructor(options?: MongoServiceConnectionOptions) {
     this.options = options || {};
   }
-  getDb(): Db {
-    return this.db!;
+  isConnected(): boolean {
+    return !!this.db;
+  }
+  throwIfNotConnected(): void {
+    // tslint:disable-next-line no-unsafe-any
+    if (!this.isConnected()) throw new InvalidOperationError('DB is not connected');
+  }
+  getDbName(): string | undefined {
+    return this.options.dbName;
+  }
+  getCollectionName(): string | undefined {
+    return this.options.collectionName;
+  }
+  private getCollection(): Collection {
+    this.throwIfNotConnected();
+
+    return this.db!.collection(this.getCollectionName()!);
   }
   async connect(
     serviceOptions?: MongoServiceConnectionOptions,
@@ -58,26 +83,28 @@ export class MongoService<T extends User = User> implements IService<T> {
 
     return this;
   }
-  isConnected(dbName?: string): boolean {
-    const targetDbName: string | undefined = dbName || this.options.dbName;
-    if (!targetDbName || !this.client) {
-      return false;
-    }
+  async close(): Promise<void> {
+    if (this.client) await this.client.close();
+    this.client = undefined;
+    this.db = undefined;
+  }
+  throwIfNotOk(result: { ok?: number }, reason: string): void {
+    // tslint:disable-next-line no-unsafe-any
+    if (!result.ok) throw new MongoError(reason, result);
+  }
+  async add(user: T): Promise<WithId<T>> {
+    const result: InsertOneWriteOpResult = await this.getCollection().insertOne(user);
+    this.throwIfNotOk(result.result, 'Insert failed');
 
-    return this.client.isConnected(targetDbName);
+    return result.ops[0] as WithId<T>;
   }
-  getDbName(): string | undefined {
-    return this.options.dbName;
-  }
-  getCollectionName(): string | undefined {
-    return this.options.collectionName;
-  }
-  async add(user: User): Promise<T> {
-    console.log(user);
-    throw new Error('Method not implemented.');
-  }
-  delete(/* user: User<TMetadata> */): MaybeAsync<T> {
-    throw new Error('Method not implemented.');
+  async delete(needle: ObjectId | WithId | Object): Promise<T> {
+    const result: FindAndModifyWriteOpResultObject = await this.getCollection().findOneAndDelete(
+      needle instanceof ObjectId ? { _id: needle } : '_id' in needle ? { _id: needle._id } : needle
+    );
+    this.throwIfNotOk(result, 'Delete failed');
+
+    return result.value as T;
   }
   update(/* user: User<TMetadata> */): MaybeAsync<T> {
     throw new Error('Method not implemented.');
