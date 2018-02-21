@@ -23,18 +23,18 @@
   },
   "devDependencies": {
     "@types/mongodb": "^3.0.5",
-    "@types/node": "^9.4.1",
+    "@types/node": "^9.4.6",
     "ava": "^0.25.0",
     "mongodb": "^3.0.2",
-    "mongodb-memory-server": "^1.6.5",
+    "mongodb-memory-server": "^1.7.0",
     "nyc": "^11.4.1",
     "prettier": "^1.10.2",
     "rimraf": "^2.6.2",
     "tslint": "^5.9.1",
-    "tslint-config-prettier": "^1.7.0",
+    "tslint-config-prettier": "^1.8.0",
     "tslint-language-service": "^0.9.8",
-    "tsutils": "^2.21.0",
-    "typescript": "^2.7.1"
+    "tsutils": "^2.21.1",
+    "typescript": "^2.7.2"
   },
   "peerDependencies": {
     "mongodb": "^3.0.2"
