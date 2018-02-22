@@ -27,14 +27,33 @@ test.beforeEach('Add Mongo service', async t => {
 
 test('Add user', async t => {
   const service = t.context.service;
-  const returnedUser = await service.add(sampleUser);
-  t.true('_id' in returnedUser);
+  const user = await service.add(sampleUser);
+  t.true('_id' in user);
+  t.is(await service.count(), 1);
 });
 
 test('Delete user by Id', async t => {
   const service = t.context.service;
-  const returnedUser = await service.add(sampleUser);
-  await t.notThrows(service.delete(returnedUser._id));
+  const user = await service.add(sampleUser);
+  t.is(await service.count(), 1);
+  await t.notThrows(service.delete(user._id));
+  t.is(await service.count(), 0);
+});
+
+test('Delete user by instance', async t => {
+  const service = t.context.service;
+  const user = await service.add(sampleUser);
+  t.is(await service.count(), 1);
+  await t.notThrows(service.delete(user));
+  t.is(await service.count(), 0);
+});
+
+test('Delete user by property', async t => {
+  const service = t.context.service;
+  await service.add(sampleUser);
+  t.is(await service.count(), 1);
+  await t.notThrows(service.delete(sampleUser));
+  t.is(await service.count(), 0);
 });
 
 test.afterEach.always('Disconnect service', async t => {
