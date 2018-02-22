@@ -1,7 +1,7 @@
 import generalTest, { RegisterContextual } from 'ava';
 import DBMemoryServer from 'mongodb-memory-server';
 import { MongoService, User, MongoServiceErrors } from '../../lib';
-import { ArgumentError } from 'common-errors';
+import { ArgumentError, InvalidOperationError } from 'common-errors';
 
 const dbName = 'testing';
 const colName = 'userCollection';
@@ -147,6 +147,20 @@ test('Closing successfully', async t => {
   t.true(service.isConnected());
   await t.notThrows(service.close());
   t.false(service.isConnected());
+});
+
+test('Can disconnect if not connected', async t => {
+  const service = new MongoService();
+  t.false(service.isConnected());
+  await t.notThrows(service.close());
+  t.false(service.isConnected());
+});
+
+test('Throws if not connected', async t => {
+  const service = new MongoService();
+  t.false(service.isConnected());
+  const error = t.throws(() => service.throwIfNotConnected());
+  t.true(error instanceof InvalidOperationError);
 });
 
 test.afterEach.always('Tear down mongo', t => {
