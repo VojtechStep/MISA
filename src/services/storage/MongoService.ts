@@ -93,7 +93,7 @@ export class MongoService<T extends User = User> implements IService<T> {
     if (!result.ok) throw new MongoError(reason, result);
   }
   async add(user: T): Promise<WithId<T>> {
-    const result: InsertOneWriteOpResult = await this.getCollection().insertOne(user);
+    const result: InsertOneWriteOpResult = await this.getCollection().insertOne(Object.assign({}, user));
     this.throwIfNotOk(result.result, 'Insert failed');
 
     return result.ops[0] as WithId<T>;
@@ -111,5 +111,8 @@ export class MongoService<T extends User = User> implements IService<T> {
   }
   get(/* userPattern: User<TMetadata> */): MaybeAsync<T | undefined> {
     throw new Error('Method not implemented.');
+  }
+  async count(needle: Object = {}): Promise<number> {
+    return this.getCollection().count(needle);
   }
 }
