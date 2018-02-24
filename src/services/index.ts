@@ -20,10 +20,11 @@ export abstract class BaseService<U extends User, T extends IService<U>> impleme
   constructor(protected readonly origin: T) {}
 
   static wrap<V extends User, T extends BaseService<V, U>, U extends IService<V>>(
-    this: { new (origin: U): T },
-    origin: U
+    this: { new (origin: U, ...constructorArgs: any[]): T },
+    origin: U,
+    ...constructorArgs: any[]
   ): T & U {
-    return new Proxy<T & U>(new this(origin) as T & U, {
+    return new Proxy<T & U>(new this(origin, constructorArgs) as T & U, {
       get(target: T & U, prop: keyof T | keyof U): T[keyof T] | U[keyof U] {
         if (isOverriden<V, U, T>(target, prop)) return target[prop];
 
