@@ -2343,9 +2343,9 @@ minimist@~0.0.1:
   dependencies:
     minimist "0.0.8"
 
-mongodb-core@3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/mongodb-core/-/mongodb-core-3.0.2.tgz#914896092dd45427d9a4f98a7997a0bfb81d163b"
+mongodb-core@3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/mongodb-core/-/mongodb-core-3.0.3.tgz#496d7dd0052dc3a2e213edf9ddcddc78b47a712c"
   dependencies:
     bson "~1.0.4"
     require_optional "^1.0.1"
@@ -2368,11 +2368,11 @@ mongodb-memory-server@^1.7.0:
     tmp "^0.0.33"
     uuid "^3.2.1"
 
-mongodb@^3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-3.0.2.tgz#28172302ed4e9388d8091e2cc4618057e6f5debc"
+mongodb@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-3.0.3.tgz#83b33e01f26b4a2e1f8a2b3427cabbaee31df017"
   dependencies:
-    mongodb-core "3.0.2"
+    mongodb-core "3.0.3"
 
 ms@2.0.0:
   version "2.0.0"
@@ -3454,9 +3454,9 @@ tsutils@^2.12.1:
   dependencies:
     tslib "^1.8.1"
 
-tsutils@^2.21.1:
-  version "2.21.1"
-  resolved "https://registry.yarnpkg.com/tsutils/-/tsutils-2.21.1.tgz#5b23c263233300ed7442b4217855cbc7547c296a"
+tsutils@^2.21.2:
+  version "2.21.2"
+  resolved "https://registry.yarnpkg.com/tsutils/-/tsutils-2.21.2.tgz#902aa5987e1440c47673543d96752df8d44ab9c7"
   dependencies:
     tslib "^1.8.1"
 
