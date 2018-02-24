@@ -11,6 +11,7 @@
       "esnext"
     ],
     "strict": true,
+    "strictFunctionTypes": false,
     "noEmitOnError": true,
     "inlineSourceMap": true,
     "target": "es2015"
