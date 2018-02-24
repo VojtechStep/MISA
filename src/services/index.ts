@@ -19,7 +19,7 @@ function isOverriden<V extends User, T extends IService<V>, U extends BaseServic
 export abstract class BaseService<U extends User, T extends IService<U>> implements IService<U> {
   constructor(protected readonly origin: T) {}
 
-  static wrap<V extends User, T extends BaseService<V, U>, U extends IService<V>>(
+  static wrap<V extends User, U extends IService<V>, T extends BaseService<V, U>>(
     this: { new (origin: U, ...constructorArgs: any[]): T },
     origin: U,
     ...constructorArgs: any[]
