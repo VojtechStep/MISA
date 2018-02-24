@@ -1,6 +1,6 @@
 import genericTest, { RegisterContextual } from 'ava';
 import DBMemoryServer from 'mongodb-memory-server';
-import { MongoService, User } from '../../lib';
+import { MongoService, User } from '../../../lib';
 
 const sampleUser: User = {
   name: 'Vojtech Stepancik',
@@ -125,7 +125,7 @@ test('Update user by Id', async t => {
   await t.notThrows(updatePromise);
   const updated = await updatePromise;
   const obtained = await service.get(user._id);
-  t.deepEqual(updated, obtained);
+  t.deepEqual(obtained, updated);
 });
 
 test('Update user by instance', async t => {
@@ -136,7 +136,7 @@ test('Update user by instance', async t => {
   await t.notThrows(updatePromise);
   const updated = await updatePromise;
   const obtained = await service.get(user._id);
-  t.deepEqual(updated, obtained);
+  t.deepEqual(obtained, updated);
 });
 
 test('Update user by property', async t => {
@@ -147,7 +147,7 @@ test('Update user by property', async t => {
   await t.notThrows(updatePromise);
   const updated = await updatePromise;
   const obtained = await service.get(user._id);
-  t.deepEqual(updated, obtained);
+  t.deepEqual(obtained, updated);
 });
 
 test('Update multiple properties', async t => {
@@ -158,7 +158,7 @@ test('Update multiple properties', async t => {
   await t.notThrows(updatePromise);
   const updated = await updatePromise;
   const obtained = await service.get(user._id);
-  t.deepEqual(updated, obtained);
+  t.deepEqual(obtained, updated);
 });
 
 test('Remove a property', async t => {
@@ -171,7 +171,7 @@ test('Remove a property', async t => {
   await t.notThrows(updatePromise);
   const updated = await updatePromise;
   const obtained = await service.get(user._id);
-  t.deepEqual(updated, obtained);
+  t.deepEqual(obtained, updated);
 });
 
 test('Remove multiple properties', async t => {
@@ -185,13 +185,10 @@ test('Remove multiple properties', async t => {
   await t.notThrows(updatePromise);
   const updated = await updatePromise;
   const obtained = await service.get(user._id);
-  t.deepEqual(updated, obtained);
+  t.deepEqual(obtained, updated);
 });
 
 test.afterEach.always('Disconnect service', async t => {
   await t.context.service.close();
-});
-
-test.afterEach.always('Tear down mongo', t => {
   t.context.mongo.stop();
 });

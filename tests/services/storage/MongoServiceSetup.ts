@@ -1,6 +1,6 @@
 import generalTest, { RegisterContextual } from 'ava';
 import DBMemoryServer from 'mongodb-memory-server';
-import { MongoService, User, MongoServiceErrors } from '../../lib';
+import { MongoService, User, MongoServiceErrors } from '../../../lib';
 import { ArgumentError, InvalidOperationError, data as DataErrors } from 'common-errors';
 
 const dbName = 'testing';
