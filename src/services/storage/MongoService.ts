@@ -129,15 +129,15 @@ export class MongoService<T extends User = User> implements IService<T> {
 
     return result.ops[0] as WithId<T>;
   }
-  async delete(needle: Needle): Promise<T> {
+  async delete(needle: Needle): Promise<WithId<T>> {
     const result: FindAndModifyWriteOpResultObject = await this.getCollection().findOneAndDelete(
       MongoService.parseNeedle(needle)
     );
     this.throwIfNotOk(result, 'Delete failed');
 
-    return result.value as T;
+    return result.value as WithId<T>;
   }
-  async update(needle: Needle, delta: Partial<T>): Promise<T> {
+  async update(needle: Needle, delta: Partial<T>): Promise<WithId<T>> {
     const result: FindAndModifyWriteOpResultObject = await this.getCollection().findOneAndUpdate(
       MongoService.parseNeedle(needle),
       MongoService.objectToUpdater(delta),
@@ -145,7 +145,7 @@ export class MongoService<T extends User = User> implements IService<T> {
     );
     this.throwIfNotOk(result, 'Update failed');
 
-    return result.value as T;
+    return result.value as WithId<T>;
   }
   async get(needle: Needle): Promise<WithId<T> | undefined> {
     const result: WithId<T> | null = await this.getCollection().findOne(MongoService.parseNeedle(needle));
