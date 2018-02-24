@@ -8,7 +8,7 @@ import {
   Collection,
   FindAndModifyWriteOpResultObject,
 } from 'mongodb';
-import { ArgumentError, InvalidOperationError, MongoError } from 'common-errors';
+import { ArgumentError, InvalidOperationError, data as DataErrors } from 'common-errors';
 import { IService } from '..';
 
 export type MongoServiceConnectionOptions = {
@@ -25,6 +25,17 @@ export enum MongoServiceErrors {
 
 export type WithId<T = {}> = T & { _id: ObjectId };
 
+export type MongoUpdater = {
+  $set?: {
+    [prop: string]: any;
+  };
+  $unset?: {
+    [prop: string]: true;
+  };
+};
+
+export type Needle = ObjectId | WithId | Object;
+
 export class MongoService<T extends User = User> implements IService<T> {
   private static readonly dbNameExtractionRegex = /[\d\w](?:\/(?:([\d-\w]+)(?:\?[\d\w]+=[\d\w]+(?:&[\d\w]+=[\d\w]+)*)?)?)?$/;
   static readonly DEFAULT_COLLECTION_NAME = 'users';
@@ -35,6 +46,26 @@ export class MongoService<T extends User = User> implements IService<T> {
   constructor(options?: MongoServiceConnectionOptions) {
     this.options = options || {};
   }
+  private static parseNeedle(needle: Needle): Object {
+    return needle instanceof ObjectId ? { _id: needle } : '_id' in needle ? { _id: needle._id } : needle;
+  }
+  static objectToUpdater(obj: Object): MongoUpdater {
+    return Object.entries(obj).reduce<MongoUpdater>((acc, [key, value]) => {
+      const newAcc: MongoUpdater = {};
+      if (acc.$set) newAcc.$set = { ...acc.$set };
+      if (acc.$unset) newAcc.$unset = { ...acc.$unset };
+
+      if (typeof value === 'undefined') {
+        if (!newAcc.$unset) newAcc.$unset = {};
+        newAcc.$unset[key] = true;
+      } else {
+        if (!newAcc.$set) newAcc.$set = {};
+        newAcc.$set[key] = value;
+      }
+
+      return newAcc;
+    }, {});
+  }
   isConnected(): boolean {
     return !!this.db;
   }
@@ -42,13 +73,17 @@ export class MongoService<T extends User = User> implements IService<T> {
     // tslint:disable-next-line no-unsafe-any
     if (!this.isConnected()) throw new InvalidOperationError('DB is not connected');
   }
+  throwIfNotOk(result: { ok?: number }, reason: string): void {
+    // tslint:disable-next-line no-unsafe-any
+    if (!result.ok) throw new DataErrors.MongoDBError(reason, result);
+  }
   getDbName(): string | undefined {
     return this.options.dbName;
   }
   getCollectionName(): string | undefined {
     return this.options.collectionName;
   }
-  private getCollection(): Collection {
+  private getCollection(): Collection<WithId<T>> {
     this.throwIfNotConnected();
 
     return this.db!.collection(this.getCollectionName()!);
@@ -60,7 +95,6 @@ export class MongoService<T extends User = User> implements IService<T> {
     if (serviceOptions) {
       let serviceOptionKey: keyof MongoServiceConnectionOptions;
       for (serviceOptionKey in serviceOptions) {
-        if (!serviceOptions.hasOwnProperty(serviceOptionKey)) continue;
         this.options[serviceOptionKey] = serviceOptions[serviceOptionKey];
       }
     }
@@ -88,29 +122,35 @@ export class MongoService<T extends User = User> implements IService<T> {
     this.client = undefined;
     this.db = undefined;
   }
-  throwIfNotOk(result: { ok?: number }, reason: string): void {
-    // tslint:disable-next-line no-unsafe-any
-    if (!result.ok) throw new MongoError(reason, result);
-  }
   async add(user: T): Promise<WithId<T>> {
+    // tslint:disable-next-line prefer-object-spread
     const result: InsertOneWriteOpResult = await this.getCollection().insertOne(Object.assign({}, user));
     this.throwIfNotOk(result.result, 'Insert failed');
 
     return result.ops[0] as WithId<T>;
   }
-  async delete(needle: ObjectId | WithId | Object): Promise<T> {
+  async delete(needle: Needle): Promise<T> {
     const result: FindAndModifyWriteOpResultObject = await this.getCollection().findOneAndDelete(
-      needle instanceof ObjectId ? { _id: needle } : '_id' in needle ? { _id: needle._id } : needle
+      MongoService.parseNeedle(needle)
     );
     this.throwIfNotOk(result, 'Delete failed');
 
     return result.value as T;
   }
-  update(/* user: User<TMetadata> */): MaybeAsync<T> {
-    throw new Error('Method not implemented.');
+  async update(needle: Needle, delta: Partial<T>): Promise<T> {
+    const result: FindAndModifyWriteOpResultObject = await this.getCollection().findOneAndUpdate(
+      MongoService.parseNeedle(needle),
+      MongoService.objectToUpdater(delta),
+      { returnOriginal: false }
+    );
+    this.throwIfNotOk(result, 'Update failed');
+
+    return result.value as T;
   }
-  get(/* userPattern: User<TMetadata> */): MaybeAsync<T | undefined> {
-    throw new Error('Method not implemented.');
+  async get(needle: Needle): Promise<WithId<T> | undefined> {
+    const result: WithId<T> | null = await this.getCollection().findOne(MongoService.parseNeedle(needle));
+
+    return result === null ? undefined : result;
   }
   async count(needle: Object = {}): Promise<number> {
     return this.getCollection().count(needle);
