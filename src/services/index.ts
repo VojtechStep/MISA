@@ -4,9 +4,9 @@ import { User } from '../models/User';
 
 export interface IService<T extends User> {
   add(user: T, ...params: any[]): MaybeAsync<T>;
-  delete(...params: any[]): MaybeAsync<T>;
-  update(...params: any[]): MaybeAsync<T>;
-  get(...params: any[]): MaybeAsync<T | undefined>;
+  delete(identifier: any, ...params: any[]): MaybeAsync<T>;
+  update(identifier: any, ...params: any[]): MaybeAsync<T>;
+  get(identifier: any, ...params: any[]): MaybeAsync<T | undefined>;
 }
 
 function isOverriden<V extends User, T extends IService<V>, U extends BaseService<V, T>>(
@@ -36,13 +36,13 @@ export abstract class BaseService<U extends User, T extends IService<U>> impleme
   add(user: U, ...params: any[]): any {
     return this.origin.add(user, ...params);
   }
-  delete(...params: any[]): any {
-    return this.origin.delete(...params);
+  delete(identifier: any, ...params: any[]): any {
+    return this.origin.delete(identifier, ...params);
   }
-  update(...params: any[]): any {
-    return this.origin.update(...params);
+  update(identifier: any, ...params: any[]): any {
+    return this.origin.update(identifier, ...params);
   }
-  get(...params: any[]): any {
-    return this.origin.get(...params);
+  get(identifier: any, ...params: any[]): any {
+    return this.origin.get(identifier, ...params);
   }
 }
