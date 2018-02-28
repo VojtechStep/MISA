@@ -9,31 +9,31 @@ export interface IService<T extends User> {
   get(identifier: any, ...params: any[]): MaybeAsync<T | undefined>;
 }
 
-function isOverriden<V extends User, T extends IService<V>, U extends BaseService<V, T>>(
-  target: T & U,
-  prop: keyof T | keyof U
+function isOverriden<T extends User, U extends BaseService<T>, V extends IService<T>>(
+  target: U,
+  prop: keyof U | keyof V
 ): prop is keyof U {
   return prop in target;
 }
 
-export abstract class BaseService<U extends User, T extends IService<U>> implements IService<U> {
-  constructor(protected readonly origin: T) {}
+export abstract class BaseService<T extends User> implements IService<T> {
+  constructor(protected readonly origin: IService<T>) {}
 
-  static wrap<V extends User, U extends IService<V>, T extends BaseService<V, U>>(
-    this: { new (origin: U, ...constructorArgs: any[]): T },
+  static wrap<T extends User, U extends IService<T>, V extends BaseService<T>>( // User type, origin type, this type
+    this: { new (origin: IService<T>, ...constructorArgs: any[]): V },
     origin: U,
     ...constructorArgs: any[]
-  ): T & U {
-    return new Proxy<T & U>(new this(origin, constructorArgs) as T & U, {
-      get(target: T & U, prop: keyof T | keyof U): T[keyof T] | U[keyof U] {
-        if (isOverriden<V, U, T>(target, prop)) return target[prop];
+  ): U & V {
+    return new Proxy<U & V>(new this(origin, constructorArgs) as U & V, {
+      get(target: U & V, prop: keyof U | keyof V): U[keyof U] | V[keyof V] {
+        if (isOverriden<T, V, U>(target, prop)) return (target as V)[prop];
 
-        return target.origin[prop];
+        return (target.origin as U)[prop];
       },
     });
   }
 
-  add(user: U, ...params: any[]): any {
+  add(user: T, ...params: any[]): any {
     return this.origin.add(user, ...params);
   }
   delete(identifier: any, ...params: any[]): any {
