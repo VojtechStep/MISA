@@ -15,7 +15,7 @@ const test = generalTest as RegisterContextual<{
   service: IService<User>;
 }>;
 
-class TransparentService extends BaseService<User, IService<User>> {}
+class TransparentService extends BaseService<User> {}
 
 test.beforeEach('Setup service', async t => {
   const mongo = new DBMemoryServer();
