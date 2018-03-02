@@ -56,6 +56,6 @@ test('Can verify a user', async t => {
 });
 
 test.afterEach.always('Disconnect service', async t => {
-  await (t.context.service as MongoService<AppUser>).close();
+  await t.context.service.close();
   t.context.mongo.stop();
 });

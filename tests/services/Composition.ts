@@ -12,7 +12,7 @@ const test = generalTest as RegisterContextual<{
     stop(): void;
     getConnectionString(): Promise<string>;
   };
-  service: IService<User>;
+  service: TransparentService & MongoService<User>;
 }>;
 
 class TransparentService extends BaseService<User> {}
@@ -31,7 +31,7 @@ test.beforeEach('Setup service', async t => {
 });
 
 test('Add is passed through', async t => {
-  const service = t.context.service as MongoService;
+  const service = t.context.service;
 
   const addPromise = service.add(sampleUser);
   await t.notThrows(addPromise);
@@ -40,7 +40,7 @@ test('Add is passed through', async t => {
 });
 
 test('Get is passed through', async t => {
-  const service = t.context.service as MongoService;
+  const service = t.context.service;
   const user = await service.add(sampleUser);
 
   const getPromise = service.get(user._id);
@@ -50,7 +50,7 @@ test('Get is passed through', async t => {
 });
 
 test('Delete is passed through', async t => {
-  const service = t.context.service as MongoService;
+  const service = t.context.service;
   const user = await service.add(sampleUser);
 
   const deletePromise = service.delete(user._id);
@@ -61,7 +61,7 @@ test('Delete is passed through', async t => {
 });
 
 test('Update is passed through', async t => {
-  const service = t.context.service as MongoService;
+  const service = t.context.service;
   const user = await service.add(sampleUser);
 
   const updatePromise = service.update(user._id, {
@@ -74,6 +74,6 @@ test('Update is passed through', async t => {
 });
 
 test.afterEach.always('Disconnect service', async t => {
-  await (t.context.service as MongoService).close();
+  await t.context.service.close();
   t.context.mongo.stop();
 });
