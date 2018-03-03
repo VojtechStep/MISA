@@ -28,12 +28,12 @@
     "mongodb": "^3.0.3",
     "mongodb-memory-server": "^1.7.0",
     "nyc": "^11.4.1",
-    "prettier": "^1.11.0",
+    "prettier": "^1.11.1",
     "rimraf": "^2.6.2",
     "tslint": "^5.9.1",
     "tslint-config-prettier": "^1.9.0",
     "tslint-language-service": "^0.9.8",
-    "tsutils": "^2.21.2",
+    "tsutils": "^2.22.1",
     "typescript": "^2.7.2"
   },
   "peerDependencies": {
