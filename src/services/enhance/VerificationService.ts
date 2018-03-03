@@ -10,21 +10,24 @@ export interface VerifiableUser {
   verified: boolean;
 }
 
-export class VerificationService<
-  U extends User & VerifiableUser = User & VerifiableUser
-> extends BaseService<U> {
+export class VerificationService<U extends User & VerifiableUser = User & VerifiableUser> extends BaseService<U> {
   constructor(origin: IService<U>, private readonly codeStringLength: number) {
     super(origin);
     if (!codeStringLength) {
       throw new ArgumentError('Verification code length must be provided and greater than 0');
     }
   }
-  async verify(identifier: any, ...parameters: any[]): Promise<U> {
-    const user: VerifiableUser = await (this.get(identifier, ...parameters) as Promise<VerifiableUser>);
+  async verify(identifier: any, ...parameters: any[]): Promise<U | undefined> {
+    const user: VerifiableUser | undefined = await (this.get(identifier, ...parameters) as Promise<
+      VerifiableUser | undefined
+    >);
+
+    if (!user) return;
+
     user.verificationCode = undefined;
     user.verified = true;
 
-    return this.update(identifier, user) as U;
+    return this.update(identifier, user) as U | undefined;
   }
   async add(user: User, ...params: any[]): Promise<U> {
     const newUser: User & VerifiableUser = { verified: false, ...user };

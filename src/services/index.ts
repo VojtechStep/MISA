@@ -4,8 +4,8 @@ import { User } from '../models/User';
 
 export interface IService<T extends User> {
   add(user: T, ...params: any[]): MaybeAsync<T>;
-  delete(identifier: any, ...params: any[]): MaybeAsync<T>;
-  update(identifier: any, ...params: any[]): MaybeAsync<T>;
+  delete(identifier: any, ...params: any[]): MaybeAsync<T | undefined>;
+  update(identifier: any, ...params: any[]): MaybeAsync<T | undefined>;
   get(identifier: any, ...params: any[]): MaybeAsync<T | undefined>;
 }
 

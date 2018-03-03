@@ -123,21 +123,20 @@ export class MongoService<T extends User = User> implements IService<T> {
     this.db = undefined;
   }
   async add(user: T): Promise<WithId<T>> {
-    // tslint:disable-next-line prefer-object-spread
     const result: InsertOneWriteOpResult = await this.getCollection().insertOne(Object.assign({}, user));
     this.throwIfNotOk(result.result, 'Insert failed');
 
     return result.ops[0] as WithId<T>;
   }
-  async delete(needle: Needle): Promise<WithId<T>> {
+  async delete(needle: Needle): Promise<WithId<T> | undefined> {
     const result: FindAndModifyWriteOpResultObject = await this.getCollection().findOneAndDelete(
       MongoService.parseNeedle(needle)
     );
     this.throwIfNotOk(result, 'Delete failed');
 
-    return result.value as WithId<T>;
+    return result.value as WithId<T> | undefined;
   }
-  async update(needle: Needle, delta: Partial<T>): Promise<WithId<T>> {
+  async update(needle: Needle, delta: Partial<T>): Promise<WithId<T> | undefined> {
     const result: FindAndModifyWriteOpResultObject = await this.getCollection().findOneAndUpdate(
       MongoService.parseNeedle(needle),
       MongoService.objectToUpdater(delta),
@@ -145,7 +144,7 @@ export class MongoService<T extends User = User> implements IService<T> {
     );
     this.throwIfNotOk(result, 'Update failed');
 
-    return result.value as WithId<T>;
+    return result.value as WithId<T> | undefined;
   }
   async get(needle: Needle): Promise<WithId<T> | undefined> {
     const result: WithId<T> | null = await this.getCollection().findOne(MongoService.parseNeedle(needle));
